@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let header = document.querySelector(".header");
     let stop=document.querySelector("#stop")
 
-    const ApiKey = "AIzaSyApwG2vCJR_5p5wk5B4dK_VYwkxnJ0Ed84";
+    const ApiKey = "API_KEY"; //please enter your key
     const ApiUrl = `https://generativelanguage.googleapis.com/v1/models/gemini-pro:generateContent?key=${ApiKey}`;
 
     document.querySelector(".del").addEventListener("click", () => {
