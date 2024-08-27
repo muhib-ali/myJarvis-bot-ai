@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index3.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="shortcut icon" href="images/ailogo.png" type="image/x-icon">
+    <link rel="stylesheet" href="response.css">
+    <link rel="stylesheet" href="imageai.css">
+    <title>b</title>
+</head>
+<body>
+    <div class="togglemode">
+        <input type="checkbox" id="image-toggle">
+        <label for="image-toggle" class="label"></label>
+    </div>
+    <header class="header">
+        <h2 class="title">Hello, there</h2>
+        <h4 class="subtitle">How can I help you today?</h4>
+        <section class="image-gallery">
+            <div class="img-card">
+                <img src="images/img-1.jpg" alt="">
+                <a href="#" class="download-btn material-symbols-outlined">download</a>
+            </div>
+            <div class="img-card">
+                <img src="images/img-2.jpg" alt="">
+                <a href="#" class="download-btn material-symbols-outlined">download</a>
+            </div>
+            <div class="img-card loadingimg">
+                <img src="images/loader.svg" alt="">
+                <a href="#" class="download-btn material-symbols-outlined">download</a>
+            </div>
+        </section>
+        <ul class="suggestion-list"></ul>
+    </header>
+    <div class="chat-list"></div>
+    <div class="typing-area">
+        <div id="thank-you-message" class="hidden">
+            Thank you for your support and for your feedback! <img src="images/happy.svg" alt="">
+        </div>
+        <div id="stop">stop</div>
+        <form action="#" class="typing-form">
+            <div class="input-wrapper">
+                <input type="text" placeholder="Describe what you want.." class="typing-input" required>
+                <button class="material-symbols-outlined icon send">send</button>
+            </div>
+            <div class="action-buttons">
+                <span class="material-symbols-outlined icon mic">mic</span>
+                <span class="material-symbols-outlined icon del">delete</span>
+                <select class="img-quantity">
+                    <option value="1">1 image</option>
+                    <option value="2">2 images</option>
+                    <option value="3">3 images</option>
+                </select>
+            </div>
+        </form>
+        <p class="disclaimer-text">This chatbot could display inaccurate information</p>
+    </div>
+
+    <script>
+        const API_URL = 'https://api.openai.com/v1/images/generations';
+        const API_KEY = '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';
+
+        const generateImageAI = async (userPrompt, userValue) => {
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'POST', // Ensure POST method is used
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'dall-e-3',
+                        prompt: userPrompt,
+                        n: parseInt(userValue, 10),
+                        size: '512x512',
+                        response_format: 'b64_json'
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`HTTP error! Status: ${response.status}, Details: ${errorText}`);
+                }
+
+                const data = await response.json();
+                console.log('Received data:', data);
+
+                const imageUrls = data.data.map(item => `data:image/png;base64,${item.b64_json}`);
+                const imgCards = imageUrls.map(url => `
+                    <div class="img-card">
+                        <img src="${url}" alt="Generated Image">
+                        <a href="${url}" class="download-btn material-symbols-outlined" download>download</a>
+                    </div>
+                `);
+                document.querySelector(".image-gallery").innerHTML = imgCards.join('');
+
+            } catch (error) {
+                console.error('Error fetching image:', error);
+            }
+        };
+
+        document.querySelector(".typing-form").addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const userPrompt = e.target.elements[0].value;
+            const userValue = e.target.elements[2].value;
+
+            console.log(userPrompt, userValue);
+
+            e.target.elements[0].value = "";
+
+            const loadingImgArray = Array.from({ length: Number(userValue) }, () => `
+                <div class="img-card loadingimg">
+                    <img src="images/loader.svg" alt="">
+                    <a href="#" class="download-btn material-symbols-outlined">download</a>
+                </div>
+            `);
+            document.querySelector(".image-gallery").innerHTML = loadingImgArray.join('');
+
+            generateImageAI(userPrompt, userValue);
+        });
+    </script>
+</body>
+</html>

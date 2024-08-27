@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style2.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link rel="shortcut icon" href="images/ailogo.png" type="image/x-icon">
+<link rel="stylesheet" href="response.css">
+    <title>b</title>
+    <script src="script2.js"></script>
+</head>
+<body>
+    <header class="header">
+        <!-- header Greetings -->
+        <h2 class="title">Hello, there</h2>
+        <h4 class="subtitle">How can I help you today?</h4>
+        <!-- Suggestion list -->
+        <ul class="suggestion-list">
+<li class="suggestion">
+    <h4 class="text">Help me plan a game night with my 5 friends for under 100$</h4>
+    <span class="material-symbols-outlined icon">
+        draw
+        </span>
+</li>
+
+<li class="suggestion">
+    <h4 class="text">Tell the 3 names of the arabian knights stories</h4>
+    <span class="material-symbols-outlined icon">
+        lightbulb
+        </span>
+</li>
+
+<li class="suggestion">
+    <h4 class="text">Should I start web development or app development?</h4>
+    <span class="material-symbols-outlined icon">
+        explore
+        </span>
+</li>
+
+<li class="suggestion">
+    <h4 class="text">Which programming laguage is easiest for learning?</h4>
+    <span class="material-symbols-outlined icon">
+        code
+        </span>
+</li>
+        </ul>
+       
+    </header>
+    <!-- chatlist -->
+     <div class="chat-list">
+        <!-- <div class="message outgoing">
+            <div class="message-content">
+                <img src="images/user.jpg" alt="User Image" class="avatar">
+                <p class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, debitis.</p>
+            </div>
+        </div> 
+
+        <div class="message incoming">
+            <div class="message-content">
+                <img src="images/gemini.svg" alt="User Image" class="avatar">
+                <p class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, debitis.</p>
+            </div>
+            <div class="ico">
+
+                <span class="material-symbols-outlined icon">
+                    content_copy
+                </span>
+                <span class="material-symbols-outlined icon" >
+                    thumb_up
+                </span>
+                <span class="material-symbols-outlined icon">
+                    thumb_down
+                </span>
+            </div>
+        </div>  -->
+
+        <!-- <div class="message incoming load">
+            <div class="message-content">
+                <img src="images/gemini.svg" alt="User Image" class="avatar">
+                <p class="text">Lorem ipsum dolor sit amet consectetur adipisicing elit. Quo, debitis.</p>
+                <div class="loading">
+                    <div class="ellipse"></div>
+                    <div class="ellipse"></div>
+                    <div class="ellipse"></div>
+                </div>
+            </div>
+       
+            <div class="ico">
+
+                <span class="material-symbols-outlined icon">
+                    content_copy
+                </span>
+                <span class="material-symbols-outlined icon">
+                    thumb_up
+                </span>
+                <span class="material-symbols-outlined icon">
+                    thumb_down
+                </span>
+            </div>
+        </div>  -->
+     </div>
+     <!-- typing-area -->
+     <div class="typing-area">
+        <div id="thank-you-message" class="hidden">
+            Thank you for your support and for your feedback !<img src="images/happy.svg" alt="">
+        </div>
+        <div id="stop">
+       stop
+        </div>
+        <form action="#" class="typing-form">
+            <div class="input-wrapper">
+                <input type="text" placeholder="Enter your prompt here.." class="typing-input" required>
+                <button class="material-symbols-outlined icon send">
+                    send
+                </button>
+            </div>
+
+            <div class="action-buttons">
+                <span  class="material-symbols-outlined icon mic">
+                    mic
+                    </span>
+                    <span class="material-symbols-outlined icon del">
+                        delete
+                        </span>
+                        <span class="material-symbols-outlined icon">
+                            add
+                            </span>
+            </div>
+        </form>
+        <p class="disclaimer-text">This chatbot could display inaccurate information</p>
+    </div>
+
+
+    <script>
+//         const copyMessage=(copyIcon)=>{
+//     const messageText=copyIcon.parentElement.querySelector(".text").innerText;
+//     // copyIcon.parentElement.querySelector(".text").innerText.execCommand()
+// navigator.clipboard.writeText(messageText);
+// copyIcon.innerText="done";
+// setTimeout(()=>copyIcon.innerText="content_copy",1000)
+// }
+function copyMessage(copyIcon) {
+    // Find the parent element of the copy icon (the div with class "message")
+    const messageDiv = copyIcon.closest(".message");
+    
+    // Check if messageDiv exists
+    if (!messageDiv) {
+        console.error("Message div not found.");
+        return;
+    }
+
+    // Find the text element within the message div
+    const messageTextElement = messageDiv.querySelector(".text");
+    
+    // Check if messageTextElement exists
+    if (!messageTextElement) {
+        console.error("Message text element not found.");
+        return;
+    }
+
+    // Get the text content
+    const messageText = messageTextElement.innerText;
+
+    // Use the Clipboard API to copy the text
+    navigator.clipboard.writeText(messageText)
+        .then(() => {
+            // Change the icon to indicate success
+            copyIcon.innerText = "done";
+            // Change it back to "content_copy" after 1 second
+            setTimeout(() => copyIcon.innerText = "content_copy", 1000);
+        })
+        .catch((error) => {
+            console.error("Failed to copy text: ", error);
+        });
+}
+// Function to show thank you message
+const showThankYouMessage = () => {
+    const messageDiv = document.getElementById('thank-you-message');
+    messageDiv.style.display = 'block'; // Show the message
+    setTimeout(() => {
+        messageDiv.style.display = 'none'; // Hide the message after 3 seconds
+    }, 1000); // Adjust the duration as needed
+};
+let activeIcon1 = null; // To track thumb-up
+let activeIcon2 = null; // To track thumb-down
+
+// thumbUp function
+const thumbUp = (icon) => {
+    // If thumb-down is active, deactivate it
+    if (activeIcon2) {
+        activeIcon2.classList.remove('clicked');
+        activeIcon2.style.color = "#E3E3E3"; // Revert color to original
+        activeIcon2 = null; // Clear the active thumb-down
+    }
+    
+    // Toggle the 'clicked' class to change the appearance
+    icon.classList.toggle('clicked');
+    
+    // Set the color based on whether it's clicked
+    if (icon.classList.contains('clicked')) {
+        icon.style.color = "blue"; // Change color when clicked
+        activeIcon1 = icon; // Update the active thumb-up
+        showThankYouMessage();
+    } else {
+        icon.style.color = "#E3E3E3"; // Revert color when not clicked
+        activeIcon1 = null; // No active thumb-up
+        
+    }
+};
+
+// thumbDown function
+const thumbDown = (icon) => {
+    // If thumb-up is active, deactivate it
+    if (activeIcon1) {
+        activeIcon1.classList.remove('clicked');
+        activeIcon1.style.color = "#E3E3E3"; // Revert color to original
+        activeIcon1 = null; // Clear the active thumb-up
+    }
+    
+    // Toggle the 'clicked' class to change the appearance
+    icon.classList.toggle('clicked');
+    
+    // Set the color based on whether it's clicked
+    if (icon.classList.contains('clicked')) {
+        icon.style.color = "red"; // Change color when clicked
+        activeIcon2 = icon; // Update the active thumb-down
+        showThankYouMessage();
+    } else {
+        icon.style.color = "#E3E3E3"; // Revert color when not clicked
+        activeIcon2 = null; // No active thumb-down
+    }
+};
+
+// Check if the browser supports the Web Speech API
+if (!('webkitSpeechRecognition' in window)) {
+    alert('Speech Recognition API not supported in this browser.');
+} else {
+    const recognition = new webkitSpeechRecognition(); // Create a new instance of SpeechRecognition
+    recognition.continuous = false; // Stop listening when speech ends
+    recognition.interimResults = false; // No interim results
+
+    // Event listener for when speech is recognized
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('Recognized speech:', transcript);
+        // Do something with the recognized speech, e.g., display it
+        document.querySelector('.typing-input').value = transcript;
+    };
+
+    // Event listener for errors
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+    };
+
+    // Event listener for when the speech recognition service has stopped
+    recognition.onend = () => {
+        console.log('Speech recognition service disconnected');
+    };
+
+    // Function to start listening
+    const startListening = () => {
+        recognition.start(); // Start the speech recognition
+    };
+}
+
+
+    </script>
+</body>
+</html>
